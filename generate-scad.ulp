@@ -36,7 +36,7 @@ string board_colors[] = {"green" , "red" , "blue" , "black" , "white" , "yellow"
 // gloabal variables
 string mkdir_cmd, export_path, cmd;
 
-int fragments_number = 20;
+int fragments_number = 10;
 
 // find string s2 in s1, and replace with s3
 string replace_string(string s1, string s2, string s3) {
@@ -373,7 +373,7 @@ board(B){
         module_name = replace_string(module_name, "-", "_");
 
         if(use_polyholes)printf("include <Magpie/magpie.scad>;\n\n");
-        printf("module %s(){\n\tboard_thickness = %f;\n\teta = 0.1;\n\tboard_size = [%f,%f", module_name, board_thickness, (u2mm(max_h)-u2mm(min_h)), (u2mm(max_v)-u2mm(min_v)));
+        printf("module %s(){\n\tfrag_num=%D;\n\tboard_thickness = %f;\n\teta = 0.1;\n\tboard_size = [%f,%f", module_name, fragments_number,board_thickness, (u2mm(max_h)-u2mm(min_h)), (u2mm(max_v)-u2mm(min_v)));
         
         if(use_extrude)
             printf("];\n");
@@ -409,8 +409,8 @@ board(B){
                 printf("\t\t\ttranslate([%.3f,%.3f,-0.1])poly_cylinder(r=%f, h=board_thickness+0.2); \/\/Hole\n",
                         u2mm(H.x) , u2mm(H.y) , u2mm(H.drill)/2);
             else
-                printf("\t\t\ttranslate([%.3f,%.3f,-0.1])cylinder(r=%f, h=board_thickness+0.2, $fn=%d); \/\/Hole\n",
-                        u2mm(H.x) , u2mm(H.y) , u2mm(H.drill)/2, fragments_number); 
+                printf("\t\t\ttranslate([%.3f,%.3f,-0.1])cylinder(r=%f, h=board_thickness+0.2, $fn=frag_num); \/\/Hole\n",
+                        u2mm(H.x) , u2mm(H.y) , u2mm(H.drill)/2); 
         }
 
         B.elements(E){
@@ -426,8 +426,8 @@ board(B){
                     printf("\t\t\ttranslate([%.3f,%.3f,-eta])poly_cylinder(r=%f, h=board_thickness+eta*2); \/\/hole\n",
                              u2mm(H.x) , u2mm(H.y) , u2mm(H.drill)/2);
                 else
-                    printf("\t\t\ttranslate([%.3f,%.3f,-eta])cylinder(r=%f, h=board_thickness+eta*2, $fn=%d); \/\/hole\n",
-                             u2mm(H.x) , u2mm(H.y) , u2mm(H.drill)/2, fragments_number); 
+                    printf("\t\t\ttranslate([%.3f,%.3f,-eta])cylinder(r=%f, h=board_thickness+eta*2, $fn=frag_num); \/\/hole\n",
+                             u2mm(H.x) , u2mm(H.y) , u2mm(H.drill)/2); 
             }
         }
 
@@ -445,8 +445,8 @@ board(B){
                         printf("\t\t\ttranslate([%.3f,%.3f,-eta])poly_cylinder(r=%f, h=board_thickness+eta*2); \/\/via\n",
                             u2mm(V.x) , u2mm(V.y) , u2mm(V.drill)/2);
                     else
-                        printf("\t\t\ttranslate([%.3f,%.3f,-eta])cylinder(r=%f, h=board_thickness+eta*2, $fn=%d); \/\/via\n",
-                            u2mm(V.x) , u2mm(V.y) , u2mm(V.drill)/2, fragments_number); 
+                        printf("\t\t\ttranslate([%.3f,%.3f,-eta])cylinder(r=%f, h=board_thickness+eta*2, $fn=frag_num); \/\/via\n",
+                            u2mm(V.x) , u2mm(V.y) , u2mm(V.drill)/2); 
                 }
             }
         }
@@ -465,8 +465,8 @@ board(B){
                         printf("\t\t\ttranslate([%.3f,%.3f,-eta])poly_cylinder(r=%f, h=board_thickness+eta*2); \/\/%s %s\n",
                             u2mm(C.x) , u2mm(C.y) , u2mm(C.pad.drill)/2, E.package.name, C.name);
                     else
-                        printf("\t\t\ttranslate([%.3f,%.3f,-eta])cylinder(r=%f, h=board_thickness+eta*2, $fn=%d); \/\/%s %s\n",
-                            u2mm(C.x) , u2mm(C.y) , u2mm(C.pad.drill)/2, fragments_number, E.package.name, C.name);
+                        printf("\t\t\ttranslate([%.3f,%.3f,-eta])cylinder(r=%f, h=board_thickness+eta*2, $fn=frag_num); \/\/%s %s\n",
+                            u2mm(C.x) , u2mm(C.y) , u2mm(C.pad.drill)/2, E.package.name, C.name);
                 }
             }
         }
